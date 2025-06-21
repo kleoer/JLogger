@@ -49,7 +49,10 @@ public struct JLoggerView: View {
                 }
                 .onEnded { gesture in
                     if logger.isMinimized {
-                        position = JLoggerView.miniPosition
+                        position = CGPoint(
+                            x: position.x + dragOffset.width,
+                            y: position.y + dragOffset.height
+                        )
                         dragOffset = .zero
                     }
                 }
@@ -89,7 +92,7 @@ public struct JLoggerView: View {
             titleBar
             logContent
         }
-        .background(Color.black.opacity(0.5))
+        .background(Color.black.opacity(0.8))
     }
     
     private var titleBar: some View {
