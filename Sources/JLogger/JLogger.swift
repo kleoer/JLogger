@@ -35,7 +35,6 @@ public class JLogger: ObservableObject, @unchecked Sendable {
         DispatchQueue.main.async {
             self.logs.append(entry)
         }
-        print("[\(level.rawValue)] \(Date()) \(message)")
     }
     
     func clearLogs() {
