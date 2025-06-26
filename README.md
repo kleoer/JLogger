@@ -13,6 +13,8 @@ A lightweight, elegant logging solution for SwiftUI applications. JLogger provid
 - 🧹 Clear logs functionality
 - 🔒 Thread-safe logging
 - 💫 Smooth animations and transitions
+- 📋 One-tap log entry copying
+- 📤 Share logs (iOS 16.0+)
 
 ## Requirements
 
