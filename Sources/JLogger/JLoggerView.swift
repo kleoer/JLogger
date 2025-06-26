@@ -114,6 +114,15 @@ public struct JLoggerView: View {
                 }
                 .buttonStyle(CircleButtonStyle())
                 
+                if #available(iOS 16.0, *) {
+                    ShareLink(item: logger.logs.map { formatLogEntry($0) }.joined(separator: "\n")) {
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundColor(.white)
+                            .font(.system(size: 14, weight: .medium))
+                    }
+                    .buttonStyle(CircleButtonStyle())
+                }
+                
                 Button(action: {
                     withAnimation(.spring()) {
                         logger.isMinimized.toggle()
@@ -129,6 +138,12 @@ public struct JLoggerView: View {
         }
         .padding(.vertical, 12)
         .background(Color.white.opacity(0.05))
+    }
+    
+    private func formatLogEntry(_ entry: JLogger.LogEntry) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return "[\(entry.level)] \(dateFormatter.string(from: entry.timestamp)) \(entry.message)"
     }
     
     private var logContent: some View {
@@ -182,6 +197,9 @@ public struct JLoggerView: View {
         .padding(.horizontal)
         .padding(.vertical, 4)
         .background(Color.white.opacity(0.03))
+        .onTapGesture {
+            UIPasteboard.general.string = formatLogEntry(entry)
+        }
     }
     
     struct CircleButtonStyle: ButtonStyle {

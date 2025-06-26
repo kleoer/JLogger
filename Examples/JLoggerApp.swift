@@ -51,5 +51,8 @@ struct JLoggerApp: App {
         }
         
         JLogger.shared.log(logMessage, randomLevel)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        print("[\(randomLevel.rawValue)] \(dateFormatter.string(from: Date())) \(logMessage)")
     }
 }
