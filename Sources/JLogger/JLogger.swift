@@ -5,9 +5,10 @@
 //  Created by kleoer on 2025/6/19.
 //
 
-import SwiftUI
+import Combine
+import Foundation
 
-public class JLogger: ObservableObject, @unchecked Sendable {
+public final class JLogger: ObservableObject, @unchecked Sendable {
 
     public enum LogLevel: String {
         case debug = "Debug"

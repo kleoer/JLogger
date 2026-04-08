@@ -5,6 +5,7 @@
 //  Created by kleoer on 2025/6/19.
 //
 
+#if canImport(SwiftUI) && canImport(UIKit)
 import SwiftUI
 
 public struct JLoggerView: View {
@@ -235,3 +236,4 @@ struct JLoggerView_Previews: PreviewProvider {
         JLoggerView()
     }
 }
+#endif
