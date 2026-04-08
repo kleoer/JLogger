@@ -4,11 +4,23 @@ import UIKit
 
 public final class JLoggerUIView: UIView {
     private static weak var currentView: JLoggerUIView?
+    private static var pendingShowWorkItem: DispatchWorkItem?
 
     public static func show(_ window: UIWindow? = nil) {
         DispatchQueue.main.async {
             let targetWindow = window ?? resolveWindow()
-            guard let targetWindow else { return }
+            guard let targetWindow else {
+                pendingShowWorkItem?.cancel()
+                let workItem = DispatchWorkItem {
+                    show(window)
+                }
+                pendingShowWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
+                return
+            }
+
+            pendingShowWorkItem?.cancel()
+            pendingShowWorkItem = nil
 
             if let existingView = currentView {
                 if existingView.superview !== targetWindow {
@@ -31,6 +43,8 @@ public final class JLoggerUIView: UIView {
 
     public static func hide() {
         DispatchQueue.main.async {
+            pendingShowWorkItem?.cancel()
+            pendingShowWorkItem = nil
             currentView?.removeFromSuperview()
             currentView = nil
         }
@@ -90,10 +104,14 @@ public final class JLoggerUIView: UIView {
     private lazy var shareButton: UIButton = makeBarButton(systemName: "square.and.arrow.up", action: #selector(shareLogs))
     private lazy var minimizeButton: UIButton = makeBarButton(systemName: "minus", action: #selector(toggleConsole))
 
+    private lazy var actionButtons: [UIButton] = [clearButton, shareButton, minimizeButton]
+
     private lazy var headerView: UIStackView = {
         let spacer = UIView()
-        let actions = UIStackView(arrangedSubviews: [clearButton, shareButton, minimizeButton])
+        let actions = UIStackView(arrangedSubviews: actionButtons)
         actions.axis = .horizontal
+        actions.alignment = .center
+        actions.distribution = .fillEqually
         actions.spacing = 12
 
         let stack = UIStackView(arrangedSubviews: [titleLabel, spacer, actions])
@@ -221,8 +239,12 @@ public final class JLoggerUIView: UIView {
         let button = UIButton(type: .system)
         button.tintColor = .white
         button.backgroundColor = UIColor.white.withAlphaComponent(0.1)
-        button.layer.cornerRadius = 16
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        button.layer.cornerRadius = 22
+        button.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        button.imageView?.contentMode = .scaleAspectFit
         button.setImage(UIImage(systemName: systemName), for: .normal)
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
