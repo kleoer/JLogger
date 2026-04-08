@@ -1,6 +1,6 @@
 # JLogger
 
-A lightweight, elegant logging solution for SwiftUI applications. JLogger provides a floating console view that can be minimized and dragged around the screen, making it perfect for debugging and monitoring your app in real-time.
+A lightweight in-app logger for iOS. JLogger provides a floating console that can be minimized, dragged, expanded, copied, and shared during runtime. It now supports both SwiftUI and UIKit integration while sharing the same logging core.
 
 ## Features
 
@@ -12,15 +12,15 @@ A lightweight, elegant logging solution for SwiftUI applications. JLogger provid
 - 📜 Auto-scrolling to latest logs
 - 🧹 Clear logs functionality
 - 🔒 Thread-safe logging
-- 💫 Smooth animations and transitions
 - 📋 One-tap log entry copying
-- 📤 Share logs (iOS 16.0+)
+- 📤 Share logs
+- 🧩 Shared logger core for SwiftUI and UIKit
+- 🪟 UIKit overlay support via `UIWindow`
 
 ## Requirements
 
 - iOS 14.0+
 - Swift 5.5+
-- SwiftUI 2.0+
 
 ## Installation
 
@@ -34,17 +34,23 @@ dependencies: [
 ]
 ```
 
-## Usage
-
-1. Import JLogger in your SwiftUI view:
+## Logging
 
 ```swift
-import JLogger
+JLogger.shared.log("Hello, World!")
+JLogger.shared.log("Debug message", .debug)
+JLogger.shared.log("Warning: Low memory", .warning)
+JLogger.shared.log("Error occurred", .error)
 ```
 
-2. Add the logger view to your SwiftUI hierarchy:
+## SwiftUI Usage
+
+Import `JLogger` and place `JLoggerView()` in your SwiftUI hierarchy:
 
 ```swift
+import SwiftUI
+import JLogger
+
 struct ContentView: View {
     var body: some View {
         ZStack {
@@ -55,24 +61,41 @@ struct ContentView: View {
 }
 ```
 
-3. Log messages using different log levels:
+## UIKit Usage
+
+Import `JLogger` and mount the overlay onto a window:
 
 ```swift
-// Log messages
-JLogger.shared.log("Hello, World!", level: .info)
-JLogger.shared.log("Debug message", level: .debug)
-JLogger.shared.log("Warning: Low memory", level: .warning)
-JLogger.shared.log("Error occurred", level: .error)
+import JLogger
+
+JLoggerUIView.show()
+JLogger.shared.log("Hello from UIKit")
 ```
 
-## Customization
+If you already have a specific `UIWindow`, you can pass it directly:
 
-JLogger comes with a beautiful default theme, but you can customize various aspects:
+```swift
+JLoggerUIView.show(window)
+```
 
-- Log entry appearance
-- Window size and position
-- Animation timing
-- Color schemes
+When `window` is `nil`, `JLoggerUIView.show()` will try to resolve the active window from `connectedScenes`. If it is not available immediately, it retries automatically.
+
+## Example Project
+
+The repository includes an `Example` target that demonstrates:
+
+- shared logging through `JLogger.shared`
+- SwiftUI integration with `JLoggerView`
+- UIKit overlay integration with `JLoggerUIView.show()`
+
+## Public API
+
+```swift
+JLogger.shared.log(_:_:)
+JLoggerUIView.show(_:)
+JLoggerUIView.hide()
+JLoggerView()
+```
 
 ## License
 
@@ -80,7 +103,7 @@ JLogger is available under the MIT license. See the LICENSE file for more info.
 
 ## Author
 
-Created by kleoer (kleoer@gmail.com)
+Created by kleoer
 
 ## Contributing
 
